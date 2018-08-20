@@ -36,3 +36,15 @@ class String2Float_lat_long(BaseEstimator, TransformerMixin):
         X['LATITUDE'] = list(map(float, X['LATITUDE']))
         X['LONGITUDE'] = list(map(float, X['LONGITUDE']))
         return X
+
+class GetData_lat_long(BaseEstimator, TransformerMixin):
+    def __init__(self, coordinates=(-43.906927, -42.987857, -23.081902, -22.736000)):
+        # The default value is a region around Rocinha
+        self.coordinates = coordinates
+    def fit(self, X):
+        return self
+    def transform(self, X):
+        idx_long = (X['LONGITUDE'] >= self.coordinates[0]) & (X['LONGITUDE'] <= self.coordinates[1])
+        idx_lat = (X['LATITUDE'] >= self.coordinates[2]) & (X['LATITUDE'] <= self.coordinates[3])
+        idx = idx_long & idx_lat
+        return X.loc[idx]
